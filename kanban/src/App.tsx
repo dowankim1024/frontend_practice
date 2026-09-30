@@ -3,9 +3,8 @@ import type { Board as BoardType } from "./type"
 import { Board } from "./components/Board"
 import { initialBoard } from "./data"
 
-
 function App() {
-  const [board, setBoard] = useState<BoardType>(initialBoard);
+  const [board, setBoard] = useState<BoardType>(initialBoard)
   function deleteCard(columnId: string, cardId: string) {
     setBoard({
       ...board,
@@ -13,7 +12,7 @@ function App() {
         if (column.id !== columnId) return column
         return {
           ...column,
-          cards: column.cards.filter((card) => cardId !== card.id)
+          cards: column.cards.filter((card) => cardId !== card.id),
         }
       }),
     })
@@ -22,10 +21,10 @@ function App() {
     setBoard({
       ...board,
       columns: board.columns.map((column) => {
-        if (column.id !== columnId) return column;
+        if (column.id !== columnId) return column
         return {
           ...column,
-          cards: [...column.cards, { id: crypto.randomUUID(), title: title }]
+          cards: [...column.cards, { id: crypto.randomUUID(), title: title }],
         }
       }),
     })
@@ -34,22 +33,27 @@ function App() {
     setBoard({
       ...board,
       columns: board.columns.map((column) => {
-        if (column.id !== columnId) return column;
+        if (column.id !== columnId) return column
         return {
           ...column,
           cards: column.cards.map((card) => {
-            if (card.id !== cardId) return card       // 관계없는 카드는 그대로
-            return { ...card, title }                  // 해당 카드만 title 바꾼 복사본
-          })
+            if (card.id !== cardId) return card // 관계없는 카드는 그대로
+            return { ...card, title } // 해당 카드만 title 바꾼 복사본
+          }),
         }
-      })
-    });
+      }),
+    })
   }
 
   return (
     <div>
       <h1>Kanban</h1>
-      <Board board={board} onDeleteCard={deleteCard} onAddCard={addCard} onUpdateTitle={updateTitle} />
+      <Board
+        board={board}
+        onDeleteCard={deleteCard}
+        onAddCard={addCard}
+        onUpdateTitle={updateTitle}
+      />
     </div>
   )
 }

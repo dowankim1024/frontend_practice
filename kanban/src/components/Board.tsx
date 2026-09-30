@@ -10,7 +10,15 @@ interface BoardProps {
 export function Board({ board, onDeleteCard, onAddCard, onUpdateTitle }: BoardProps) {
   return (
     <div className={styles.board}>
-      {board.columns.map((column) => <Column key={column.id} column={column} onDeleteCard={onDeleteCard} onAddCard={onAddCard} onUpdateTitle={(cardId, title) => onUpdateTitle(column.id, cardId, title)} />)}
+      {board.columns.map((column) => (
+        <Column
+          key={column.id}
+          column={column}
+          onDeleteCard={onDeleteCard}
+          onAddCard={onAddCard}
+          onUpdateTitle={onUpdateTitle}
+        />
+      ))}
     </div>
   )
 }

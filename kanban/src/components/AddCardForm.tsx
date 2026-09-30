@@ -8,9 +8,9 @@ export function AddCardForm({ onAdd }: AddCardFormProps) {
   const [text, setText] = useState("")
 
   function handleSubmit() {
-    if (!text.trim()) return;
-    onAdd(text.trim());
-    setText("");
+    if (!text.trim()) return
+    onAdd(text.trim())
+    setText("")
   }
 
   return (

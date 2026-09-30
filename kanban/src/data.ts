@@ -1,4 +1,4 @@
-import type { Board } from "./type";
+import type { Board } from "./type"
 
 export const initialBoard: Board = {
   columns: [
@@ -8,14 +8,14 @@ export const initialBoard: Board = {
       cards: [
         {
           id: "1",
-          title: "공부하기"
+          title: "공부하기",
         },
         {
           id: "2",
           title: "잠자기",
-          description: "꿀잠잘것"
-        }
-      ]
+          description: "꿀잠잘것",
+        },
+      ],
     },
     {
       id: "200",
@@ -23,14 +23,14 @@ export const initialBoard: Board = {
       cards: [
         {
           id: "3",
-          title: "놀기"
+          title: "놀기",
         },
         {
           id: "4",
           title: "먹기",
-          description: "먹다지침"
-        }
-      ]
+          description: "먹다지침",
+        },
+      ],
     },
     {
       id: "300",
@@ -38,14 +38,14 @@ export const initialBoard: Board = {
       cards: [
         {
           id: "5",
-          title: "살기"
+          title: "살기",
         },
         {
           id: "6",
           title: "태어나기",
-          description: "죽지못해태어나기"
-        }
-      ]
-    }
-  ]
-};
+          description: "죽지못해태어나기",
+        },
+      ],
+    },
+  ],
+}
