@@ -12,7 +12,7 @@ export function Column({ column, onDeleteCard, onAddCard, onUpdateTitle }: Colum
   return (
     <div className={styles.column}>
       <h2 className={styles.title}>{column.title}</h2>
-      {column.cards.map((card) => <Card key={card.id} card={card} onDelete={(cardId) => onDeleteCard(column.id, cardId)} onUpdateTitle={(title) => onUpdateTitle(card.id, title)} />)}
+      {column.cards.map((card) => <Card key={card.id} card={card} onDelete={() => onDeleteCard(column.id, card.id)} onUpdateTitle={(title) => onUpdateTitle(card.id, title)} />)}
       <AddCardForm onAdd={(title) => onAddCard(column.id, title)} />
     </div>
   )

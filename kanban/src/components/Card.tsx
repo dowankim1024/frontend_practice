@@ -4,7 +4,7 @@ import styles from "./Card.module.css"
 
 interface CardProps {
   card: CardData
-  onDelete: (cardId: string) => void
+  onDelete: () => void
   onUpdateTitle: (title: string) => void
 }
 
@@ -34,7 +34,7 @@ export function Card({ card, onDelete, onUpdateTitle }: CardProps) {
         onBlur={commit}
       /> : <h3 className={styles.title} onClick={() => setIsEditing(true)}>{card.title}</h3>}
       {card.description && <p className={styles.description}>{card.description}</p>}
-      <button onClick={() => onDelete(card.id)}>삭제</button>
+      <button onClick={onDelete}>삭제</button>
     </div>
   )
 }
