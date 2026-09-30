@@ -1,6 +1,6 @@
 # Lesson 2 — 카드 CRUD
 
-> 2단계 교재. 코드는 1차 리뷰 시점 기준. 콜백 시그니처 통일 후 §3.2가 갱신된다.
+> 2단계 교재. 코드는 최종(시그니처 통일 후) 기준.
 
 ## 1. 과제
 카드 추가·삭제·제목 수정. 상태는 `App`의 `useState<Board>` 하나. 상태를 바꾸는 함수는 `App`에 정의해 `Board → Column → Card`로 내려보낸다. 불변 업데이트만 사용. 폼은 `AddCardForm`으로 분리.
@@ -33,9 +33,8 @@ import type { Board as BoardType } from "./type"
 import { Board } from "./components/Board"
 import { initialBoard } from "./data"
 
-
 function App() {
-  const [board, setBoard] = useState<BoardType>(initialBoard);
+  const [board, setBoard] = useState<BoardType>(initialBoard)
   function deleteCard(columnId: string, cardId: string) {
     setBoard({
       ...board,
@@ -43,7 +42,7 @@ function App() {
         if (column.id !== columnId) return column
         return {
           ...column,
-          cards: column.cards.filter((card) => cardId !== card.id)
+          cards: column.cards.filter((card) => cardId !== card.id),
         }
       }),
     })
@@ -52,10 +51,10 @@ function App() {
     setBoard({
       ...board,
       columns: board.columns.map((column) => {
-        if (column.id !== columnId) return column;
+        if (column.id !== columnId) return column
         return {
           ...column,
-          cards: [...column.cards, { id: crypto.randomUUID(), title: title }]
+          cards: [...column.cards, { id: crypto.randomUUID(), title: title }],
         }
       }),
     })
@@ -64,22 +63,27 @@ function App() {
     setBoard({
       ...board,
       columns: board.columns.map((column) => {
-        if (column.id !== columnId) return column;
+        if (column.id !== columnId) return column
         return {
           ...column,
           cards: column.cards.map((card) => {
-            if (card.id !== cardId) return card       // 관계없는 카드는 그대로
-            return { ...card, title }                  // 해당 카드만 title 바꾼 복사본
-          })
+            if (card.id !== cardId) return card // 관계없는 카드는 그대로
+            return { ...card, title } // 해당 카드만 title 바꾼 복사본
+          }),
         }
-      })
-    });
+      }),
+    })
   }
 
   return (
     <div>
       <h1>Kanban</h1>
-      <Board board={board} onDeleteCard={deleteCard} onAddCard={addCard} onUpdateTitle={updateTitle} />
+      <Board
+        board={board}
+        onDeleteCard={deleteCard}
+        onAddCard={addCard}
+        onUpdateTitle={updateTitle}
+      />
     </div>
   )
 }
@@ -113,7 +117,15 @@ interface BoardProps {
 export function Board({ board, onDeleteCard, onAddCard, onUpdateTitle }: BoardProps) {
   return (
     <div className={styles.board}>
-      {board.columns.map((column) => <Column key={column.id} column={column} onDeleteCard={onDeleteCard} onAddCard={onAddCard} onUpdateTitle={(cardId, title) => onUpdateTitle(column.id, cardId, title)} />)}
+      {board.columns.map((column) => (
+        <Column
+          key={column.id}
+          column={column}
+          onDeleteCard={onDeleteCard}
+          onAddCard={onAddCard}
+          onUpdateTitle={onUpdateTitle}
+        />
+      ))}
     </div>
   )
 }
@@ -128,13 +140,20 @@ interface ColumnProps {
   column: ColumnData
   onDeleteCard: (columnId: string, cardId: string) => void
   onAddCard: (columnId: string, title: string) => void
-  onUpdateTitle: (cardId: string, title: string) => void
+  onUpdateTitle: (columnId: string, cardId: string, title: string) => void
 }
 export function Column({ column, onDeleteCard, onAddCard, onUpdateTitle }: ColumnProps) {
   return (
     <div className={styles.column}>
       <h2 className={styles.title}>{column.title}</h2>
-      {column.cards.map((card) => <Card key={card.id} card={card} onDelete={() => onDeleteCard(column.id, card.id)} onUpdateTitle={(title) => onUpdateTitle(card.id, title)} />)}
+      {column.cards.map((card) => (
+        <Card
+          key={card.id}
+          card={card}
+          onDelete={() => onDeleteCard(column.id, card.id)}
+          onUpdateTitle={(title) => onUpdateTitle(column.id, card.id, title)}
+        />
+      ))}
       <AddCardForm onAdd={(title) => onAddCard(column.id, title)} />
     </div>
   )
@@ -158,8 +177,8 @@ onDelete={(cardId) => onDeleteCard(column.id, cardId)}
 | `onDeleteCard={onDeleteCard}` | 같은 함수 그대로 통과 |
 | `onDelete={(cardId) => onDeleteCard(column.id, cardId)}` | 새 함수. 안에서 원래 함수 호출 |
 
-**해설: 시그니처 일관성 (리뷰 지적)**
-1차 리뷰 시점엔 세 콜백이 각각 다른 층에서 id를 끼웠다. 통일 규칙:
+**해설: 시그니처 일관성 (리뷰 지적 → 통일 완료)**
+1차 리뷰 시점엔 세 콜백이 각각 다른 층에서 id를 끼웠다(`onDeleteCard`는 Card가 id를 올리고, `onUpdateTitle`은 Board가 column.id를 끼우는 식). 통일 규칙:
 - `Board`는 전부 통과 (아무것도 모른다)
 - `Column`이 `column.id`와 `card.id`를 모두 끼운다 (map 안에서 둘 다 안다)
 - 말단은 payload만 (`Card`: `onDelete()`, `onUpdateTitle(title)`)
@@ -168,7 +187,7 @@ onDelete={(cardId) => onDeleteCard(column.id, cardId)}
 
 ### 3.3 `src/components/Card.tsx` — 편집 모드
 ```tsx
-import { useState } from "react";
+import { useState } from "react"
 import type { Card as CardData } from "../type"
 import styles from "./Card.module.css"
 
@@ -179,30 +198,36 @@ interface CardProps {
 }
 
 export function Card({ card, onDelete, onUpdateTitle }: CardProps) {
-  const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [text, setText] = useState<string>(card.title);
+  const [isEditing, setIsEditing] = useState<boolean>(false)
+  const [text, setText] = useState<string>(card.title)
   function commit() {
-    if (!text.trim()) setText(card.title);
-    else onUpdateTitle(text.trim());
-    setIsEditing(false);
+    if (!text.trim()) setText(card.title)
+    else onUpdateTitle(text.trim())
+    setIsEditing(false)
   }
   return (
     <div className={styles.card}>
-      {isEditing ? <input
-        autoFocus
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            commit();
-          }
-          if (e.key === "Escape") {
-            setText(card.title);
-            setIsEditing(false);
-          }
-        }}
-        onBlur={commit}
-      /> : <h3 className={styles.title} onClick={() => setIsEditing(true)}>{card.title}</h3>}
+      {isEditing ? (
+        <input
+          autoFocus
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              commit()
+            }
+            if (e.key === "Escape") {
+              setText(card.title)
+              setIsEditing(false)
+            }
+          }}
+          onBlur={commit}
+        />
+      ) : (
+        <h3 className={styles.title} onClick={() => setIsEditing(true)}>
+          {card.title}
+        </h3>
+      )}
       {card.description && <p className={styles.description}>{card.description}</p>}
       <button onClick={onDelete}>삭제</button>
     </div>
@@ -232,9 +257,9 @@ export function AddCardForm({ onAdd }: AddCardFormProps) {
   const [text, setText] = useState("")
 
   function handleSubmit() {
-    if (!text.trim()) return;
-    onAdd(text.trim());
-    setText("");
+    if (!text.trim()) return
+    onAdd(text.trim())
+    setText("")
   }
 
   return (
@@ -279,6 +304,18 @@ React는 `onClick`을 마우스 이벤트로 호출한다. `onDelete`는 문자�
 **Q. `onDeleteCard`가 곧 `deleteCard`라는 게 헷갈린다.**
 함수도 값. `const a = f`면 `a`와 `f`는 같은 함수. props로 넘기는 것도 이 대입. 반면 화살표로 감싼 건 **새 함수**.
 
+**Q. `Column`에서 `card.id`를 어떻게 끼우나? `Column`은 `column.id`만 갖고 있는 거 아닌가?**
+`map` 안에서는 지금 도는 카드가 `card` 변수로 잡혀 있다. `key={card.id}`에 이미 쓰고 있는 그 변수. 같은 줄의 포장지 안에서도 쓸 수 있다. `column.id`는 props에서, `card.id`는 map 매개변수에서 온다. 출처만 다르지 둘 다 그 줄에서 손에 잡히는 값.
+
+**Q. map을 쓰니까 되는 건가? 부모 자식이 전부 map이라서?**
+map은 부모 자식 관계가 아니라 반복문일 뿐. id를 끼울 수 있는 진짜 이유는 **부모가 자식에게 줄 데이터를 손에 들고 있어서**. 카드가 하나뿐이면 `const card = column.cards[0]` 해도 똑같이 `card.id`를 쓸 수 있다. 질문을 "이 줄에서 어떤 변수가 보이나"로 바꿔서 생각할 것(클로저).
+
+**Q. 데이터가 맨 위(App)에 있으니 App에서 다 잡을 수도 있는 거 아닌가?**
+App은 데이터 전부를 갖지만 **"어느 카드가 눌렸는지"는 모른다.** 그 정보는 그리는 순간(map)이나 눌리는 순간(leaf)에만 생긴다. App이 다 잡으려면 컴포넌트를 안 나누고 App이 직접 이중 map을 돌아야 한다. 컴포넌트를 나눈다 = "어느 항목인지 아는 지점"을 아래로 내려보낸다.
+
+**Q. 카드는 자기 id만 처리해야 하는 거 아닌가? 왜 Column이 card.id를 대신 넣나?**
+그 직관도 맞는 방식이다(`Card`가 `onDelete(card.id)`로 올리기). 다만 `card` 객체는 원래 `Column`이 갖고 있던 걸 `Card`에 건넨 것이라 둘 다 안다. 누가 쓰느냐는 설계 선택. 봉투 비유: `Card`가 클릭 시 주소를 적어 부치느냐, `Column`이 만들 때 주소를 미리 써서 주느냐. 후자를 고른 이유는 `Card`가 "지워줘" 한 마디(`() => void`)만 하면 되어 더 단순해서. HTML `<button onClick={() => remove(5)}>`에서 버튼이 5를 모르는 것과 같다.
+
 **Q. `onUpdateTitle`엔 왜 cardId를 안 올리나?**
 `Column`이 map 안에서 `card.id`를 이미 알기 때문에 대신 끼울 수 있다. 삭제도 똑같이 할 수 있었다. 어느 쪽이든 되지만 **섞지 말 것**.
 
@@ -309,8 +346,26 @@ React는 `onClick`을 마우스 이벤트로 호출한다. `onDelete`는 문자�
 - **부모에 클릭 핸들러 + 자식이 인터랙티브 = 버블링 의심.**
 - **포맷팅은 도구에:** `pnpm format` (Prettier).
 
-## 8. 면접 문답
-_(답변 후 채움)_
-1. 왜 상태를 직접 수정하면 안 되는가? React는 어떻게 "바뀌었다"를 판단하는가?
-2. 제어 컴포넌트가 뭔가? `value`와 `onChange`를 왜 세트로 써야 하는가?
-3. `setBoard(prev => ...)` 형태는 언제 필요한가? 지금 코드에서 어떤 상황이면 문제가 되는가?
+## 8. 면접 문답 (실제 답변 + 교정)
+
+**Q1. 왜 상태를 직접 수정하면 안 되는가?**
+답변: "원본을 바꾸면 이전이랑 같은 객체라고 판단해서 React가 바뀐 줄 모름."
+교정: 맞다. 정확히는 `Object.is(이전, 새것)`로 **참조**를 비교하고 내용은 안 본다. `push`는 참조가 같아 리렌더를 건너뛰고, spread는 참조가 달라 감지된다.
+모범답안: "React는 상태를 참조 동등성으로 비교하기 때문에, 원본을 변경하면 참조가 같아 변경을 감지하지 못합니다. 그래서 spread나 map/filter로 새 객체를 만듭니다."
+
+**Q2. 제어 컴포넌트가 뭔가?**
+답변: "폼 요소 값을 컴포넌트 상태로 관리하고 동기화. onChange를 value와 연결해야 칠 때마다 리렌더되어 value가 갱신됨. 성능 문제 있을 수도."
+교정: 맞다. 핵심 단어는 **단일 진실 원천**. DOM input이 값을 갖지 않고 React 상태만 값을 가진다. `value`만 있고 `onChange`가 없으면 타이핑이 씹히고 경고. 성능 우려는 맞지만 그래서 `AddCardForm`을 분리한 것 — 리렌더 범위가 그 폼뿐.
+
+**Q3. `setBoard(prev => ...)`는 언제 필요한가?**
+답변: 모름.
+설명: `setState`는 그 자리에서 바꾸는 게 아니라 "다음 렌더에 적용해줘"라고 **줄을 세우는** 것(배칭). 값/함수 형태 모두 적용 시점은 같다. 차이는 **뭘 읽느냐**.
+
+| | 줄에 세우는 것 | 계산 시점 | 읽는 이전 상태 |
+|---|---|---|---|
+| `setBoard({ ...board })` | 완성된 값 | 지금, 내가 | 클로저의 `board` (낡을 수 있음) |
+| `setBoard(prev => ...)` | 레시피 | 나중에, React가 | 줄 앞 결과 (항상 최신) |
+
+한 이벤트에서 `addCard`를 두 번 부르면 값 형태는 둘 다 낡은 `board`를 읽어 하나가 사라진다. 함수 형태는 두 번째의 `prev`가 첫 번째 결과라 둘 다 남는다.
+규칙: **새 상태가 이전 상태에 의존하면 함수형.** 지금 안 고치는 이유는 3단계 `useReducer`가 항상 최신 상태를 받아 구조적으로 해결되기 때문. 7단계 `await` 뒤 갱신에서 실제로 만난다.
+동기/비동기 문제가 아니다. 둘 다 "나중에 적용"이고, 함수형은 "읽기"까지 나중으로 미루는 것.
