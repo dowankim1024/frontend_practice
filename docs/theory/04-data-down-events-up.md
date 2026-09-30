@@ -40,6 +40,20 @@ App:          addCard("100", "빨래하기") → setBoard(...)
 지금 방식이면 `AddCardForm`은 "글자 받아서 위로 올리는 폼"일 뿐이라, 나중에 컬럼 추가 폼 등으로 그대로 재사용 가능.
 **각 컴포넌트는 자기가 아는 것만 다룬다.**
 
+## 함수는 값이다: "그대로 넘기기" vs "새로 만들어 넘기기"
+```ts
+const onDeleteCard = deleteCard   // 새 함수가 아니라 같은 함수에 이름표 하나 더
+onDeleteCard("300", "5")          // deleteCard("300", "5") 와 동일
+```
+`<Board onDeleteCard={deleteCard} />`는 `Board` 안에서 이 대입이 일어난 것. 별명을 불러도 같은 사람이 온다.
+
+| 코드 | 무슨 일 | 어디서 |
+|------|---------|--------|
+| `onDeleteCard={onDeleteCard}` | 같은 함수를 그대로 통과. 이름표만 추가 | `Board` |
+| `onDelete={(cardId) => onDeleteCard(column.id, cardId)}` | **새 함수**를 만들어 넘김. 안에서 원래 함수 호출 | `Column` |
+
+`Card`가 받은 `onDelete`는 `App.deleteCard`와 **다른 함수**다. `Column`이 만든 것이고, 호출되면 안에서 `deleteCard`를 호출한다.
+
 ## 포장지(화살표 함수로 감싸기) 패턴
 | 상황 | 코드 | 이유 |
 |------|------|------|
