@@ -14,11 +14,11 @@
 5. 컬럼은 가로로 나열, 카드는 컬럼 안에 세로로 쌓인다. 예쁠 필요 없고 구분만 되면 된다.
 
 ## 완료 조건
-- [ ] `pnpm build` 에러 없음 (`tsc -b` 포함).
-- [ ] `pnpm lint` 경고 없음.
-- [ ] 브라우저에서 컬럼 3개, 카드가 올바른 컬럼에 표시.
-- [ ] 콘솔에 key 관련 경고 없음.
-- [ ] `any` 사용 0회.
+- [x] `pnpm build` 에러 없음 (`tsc -b` 포함).
+- [x] `pnpm lint` 경고 없음.
+- [x] 브라우저에서 컬럼 3개, 카드가 올바른 컬럼에 표시.
+- [x] 콘솔에 key 관련 경고 없음.
+- [x] `any` 사용 0회.
 
 ## 힌트 (막히면 보기)
 - props 타입은 `interface XxxProps`로 따로 선언하고 `function Xxx({ ... }: XxxProps)` 형태로.
@@ -38,3 +38,23 @@
 - 막힌 지점 3: 빈 컬럼 대비로 `cards?` 사용 → [troubleshooting/01](../troubleshooting/01-cards-optional-misconception.md)
 
 ## 리뷰 결과 (Claude가 채움)
+
+### 2026-09-30 1차 리뷰 — 통과 (면접 문답 대기)
+
+**잘한 것**
+- `Card` → `Column` → `Board` 세 컴포넌트가 완전히 같은 패턴. props 인터페이스는 컴포넌트 파일 안에, 도메인 타입은 `type.ts`에. 타입/컴포넌트 이름 충돌은 `as XxxData` 별칭으로 일관되게 처리.
+- key를 `map`이 반환하는 요소에, `id`로 정확히 붙임.
+- `App`은 데이터를 `Board`에 넘기기만 함. 스펙 요구사항 4번 충족.
+
+**Claude가 직접 손댄 부분 (사용자 요청)**
+- `Card.tsx` 전체 (troubleshooting/02 참고), `Column.module.css`, `Board.module.css`, `Column.moudle.css` 파일명 오타.
+
+**사소한 것 (지금 안 고쳐도 됨)**
+- `data.ts`만 세미콜론을 씀. 나머지는 안 씀. 8단계쯤에서 Prettier 붙이면 자동으로 정리됨.
+- `.board`에 `min-height: 100vh`를 줬는데 `App`의 `<h1>` 높이가 더해져 세로 스크롤이 조금 생김. Claude가 쓴 CSS의 문제. 2단계 때 정리.
+- `{card.description && ...}` 패턴은 값이 문자열이라 안전. 숫자 필드였다면 `0`이 화면에 찍히는 함정이 있음. 면접 단골.
+
+**면접 질문** — 아래 3개에 대한 사용자 답변을 듣고 종료 처리.
+1. index를 key로 쓰면 언제 문제가 생기는가?
+2. props 타입을 `type.ts`가 아니라 컴포넌트 파일 안에 둔 이유는?
+3. `{card.description && <p>...</p>}`에서 `description`이 숫자 `0`이었다면 어떻게 되는가?
