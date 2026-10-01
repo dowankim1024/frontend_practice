@@ -42,6 +42,7 @@
 ## 문서 규칙
 - `docs/lessons/NN-제목.md` — **단계별 교재.** 과제, 전체 그림, 최종 코드 전문 + 줄 단위 해설, 대화에서 나온 질문과 답, 삽질 표, 팁, 면접 문답. 나중에 이 파일 하나만 읽어도 그 단계를 복기할 수 있어야 한다. 단계 종료 시 Claude가 완성하고, 진행 중에도 갱신.
 - `docs/stages/NN-제목.md` — Claude가 작성하는 단계 스펙. 리뷰 결과도 여기 하단에 추가.
+- `docs/handbook/` — 서문 + lessons 전부 + 부록을 묶은 PDF 핸드북. 그림은 `img/*.svg`. 단계 끝날 때마다 `bash docs/handbook/build.sh`로 재생성.
 - `docs/theory/` — 대화에서 나온 개념을 Claude가 정리. "면접에서 이렇게 말한다" 섹션 필수.
 - `docs/troubleshooting/` — 사용자가 막혔던 것과 오해했던 것을 Claude가 기록. 한 파일에 한 문제.
 - `docs/retro/NN.md` — 단계 끝날 때 Claude가 대화 기반으로 쓰는 회고 (배운 것 / 어려웠던 것 / 면접에서 말할 것).

@@ -7,10 +7,19 @@
 요구: `type.ts`에 `Card`/`Column`/`Board` 타입, `data.ts`에 초기 데이터, `Board`/`Column`/`Card` 컴포넌트 3개 + CSS Modules, `App`은 `Board`에 데이터만 넘김.
 
 ## 2. 전체 그림
-```
-App ──initialBoard──▶ Board ──column──▶ Column ──card──▶ Card
-```
+
+![1단계 컴포넌트 트리와 데이터 흐름](../handbook/img/fig-stage1-tree.svg)
+
 데이터는 위에서 아래로 props로만 흐른다. 각 컴포넌트는 받은 것을 그리기만 한다.
+
+### 이 단계가 만드는 출발점
+아직 "나아진 것"은 없다. 대신 뒤 단계가 전부 이 위에 쌓이는 **토대 세 개**를 만든다.
+
+| 토대 | 뒤에서 어떻게 쓰이나 |
+|------|---------------------|
+| 도메인 타입 `Board/Column/Card` | 2단계 상태 타입, 3단계 리듀서 시그니처, 4단계 저장 단위 |
+| 컴포넌트 3개가 같은 패턴 | 2단계에서 콜백을 끼울 자리, 3단계에서 `useBoard()`로 바꿀 자리가 명확 |
+| key = id | 2단계 삭제, 5단계 순서 변경에서 상태가 엉뚱한 카드에 붙는 걸 방지 |
 파일 구조:
 ```
 src/
@@ -270,6 +279,9 @@ export default App
 자식이 아니라 부모 컨테이너에. 위 CSS 해설 참고.
 
 **Q5. index를 key로 쓰면 "리렌더가 안 된다"는 건가?**
+
+![index key vs id key](../handbook/img/fig-key.svg)
+
 아니다. 리렌더는 되는데 **잘못된 짝으로** 된다. `[A,B,C]`에서 A 삭제 → `[B,C]`. index key면 React는 "0번은 그대로 있고 내용만 A→B로 바뀜"으로 본다. A 인스턴스가 살아남아 B 옷을 입고, A에 치던 input 값이 B에 남는다. id key면 "A가 사라졌다"를 정확히 알고 A만 언마운트.
 
 ## 5. 삽질 기록

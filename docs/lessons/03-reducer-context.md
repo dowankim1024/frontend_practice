@@ -7,6 +7,20 @@
 상태 변경 로직을 `App`에서 리듀서(순수 함수)로 옮기고, `dispatch`를 Context로 배달해 말단이 직접 부른다.
 리팩터 = 겉보기 동작 유지 + 내부 구조 변경. 2단계 완료 조건이 끝까지 전부 통과해야 한다.
 
+## 1.5 2단계 대비 나아진 것
+
+| | 2단계 | 3단계 |
+|---|---|---|
+| 상태 변경 로직 | `App` 안의 함수 3개 (컴포넌트에 묶임) | `boardReducer` 순수 함수 (React 없이 호출·테스트 가능) |
+| 변경 통로 | 콜백 3개를 각각 내려보냄 | `dispatch` 하나. 액션 객체만 다름 |
+| 중간 컴포넌트 | `Board`가 콜백 3개를 통과만 시킴 | `Board`, `Column`은 콜백의 존재를 모름 |
+| 말단 | `Card`는 `onDelete()` 호출 | `Card`가 `dispatch({ type: "deleteCard", ... })` 직접 |
+| 함수형 setter 문제 | `setBoard({ ...board })`가 낡은 값 읽을 위험 | 리듀서가 항상 최신 `state`를 받아 구조적으로 해결 |
+| 액션 추가 시 | 함수 추가 + 세 파일의 props 수정 | 액션 타입 추가 + case 추가. 빼먹으면 `never`가 컴파일 에러 |
+| 새로 생긴 비용 | — | `Card`/`AddCardForm`이 `columnId`를 알아야 함. 파일 3개 추가. 리렌더 범위는 아직 개선 안 됨(9단계) |
+
+![prop drilling vs Context](../handbook/img/fig-context.svg)
+
 ## 2. 전체 그림
 
 ### 2단계 (before)
@@ -342,6 +356,8 @@ s1 === s2 ?     false                                                   (매번 
 - 이전 결과를 다음 입력으로 넣으면 이어진다. 앱에서 클릭 세 번 = React가 이걸 세 번 해주는 것.
 - 원본은 안 건드린다. 참조가 매번 다르다(2단계 Q1).
 - 8단계 테스트는 이 코드를 `expect(...)`로 감싸는 것.
+
+![useReducer 순환](../handbook/img/fig-reducer-loop.svg)
 
 **`useReducer`가 하는 일 한 줄:** 현재 보드를 기억하고 있다가, `dispatch(액션)`이 오면 `boardReducer(현재보드, 액션)`을 호출하고, 결과를 새 현재 보드로 바꿔치기한 뒤 리렌더.
 
