@@ -1,15 +1,17 @@
 import { useState } from "react"
+import { useBoardDispatch } from "../useBoard"
 
 interface AddCardFormProps {
-  onAdd: (title: string) => void
+  columnId: string
 }
 
-export function AddCardForm({ onAdd }: AddCardFormProps) {
+export function AddCardForm({ columnId }: AddCardFormProps) {
   const [text, setText] = useState("")
+  const dispatch = useBoardDispatch()
 
   function handleSubmit() {
     if (!text.trim()) return
-    onAdd(text.trim())
+    dispatch({ type: "addCard", columnId, title: text.trim(), cardId: crypto.randomUUID() })
     setText("")
   }
 

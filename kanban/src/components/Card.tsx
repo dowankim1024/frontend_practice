@@ -1,19 +1,20 @@
 import { useState } from "react"
 import type { Card as CardData } from "../type"
 import styles from "./Card.module.css"
+import { useBoardDispatch } from "../useBoard"
 
 interface CardProps {
   card: CardData
-  onDelete: () => void
-  onUpdateTitle: (title: string) => void
+  columnId: string
 }
 
-export function Card({ card, onDelete, onUpdateTitle }: CardProps) {
+export function Card({ card, columnId }: CardProps) {
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const [text, setText] = useState<string>(card.title)
+  const dispatch = useBoardDispatch()
   function commit() {
     if (!text.trim()) setText(card.title)
-    else onUpdateTitle(text.trim())
+    else dispatch({ type: "updateCardTitle", columnId, cardId: card.id, title: text.trim() })
     setIsEditing(false)
   }
   return (
@@ -40,7 +41,9 @@ export function Card({ card, onDelete, onUpdateTitle }: CardProps) {
         </h3>
       )}
       {card.description && <p className={styles.description}>{card.description}</p>}
-      <button onClick={onDelete}>삭제</button>
+      <button onClick={() => dispatch({ type: "deleteCard", columnId, cardId: card.id })}>
+        삭제
+      </button>
     </div>
   )
 }
