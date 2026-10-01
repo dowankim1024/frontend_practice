@@ -1,0 +1,19 @@
+/* 컬럼 하나. 안에 있는 카드들을 세로로 쌓는다. */
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  width: 272px;
+  flex-shrink: 0;
+  padding: 12px;
+  border-radius: 8px;
+  background: #ebecf0;
+}
+
+.title {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #172b4d;
+}

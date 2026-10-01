@@ -1,0 +1,11 @@
+/* 보드 전체. 안에 있는 컬럼들을 가로로 나열한다. */
+.board {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+
+  padding: 16px;
+  overflow-x: auto;
+  min-height: 100vh;
+}

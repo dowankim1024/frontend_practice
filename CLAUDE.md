@@ -6,6 +6,7 @@
 
 ## 프로젝트
 - `kanban/` — Trello 미니 클론. Vite + React 19 + TypeScript, CSS Modules, 상태 라이브러리 없음, 라우터 없음.
+- `kanban-redo/` — 1단계 끝 시점 복사본. 2·3단계를 스펙만 보고 재구현하는 곳. 규칙은 `docs/redo/README.md`. **재구현 중에는 Claude가 힌트를 주지 않는다.** 리뷰 요청 시 원본과 비교.
 - `docs/` — 단계별 스펙, 이론 정리, 삽질 기록, 회고.
 
 ## 역할 분담 (중요)

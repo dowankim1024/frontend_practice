@@ -4,8 +4,26 @@
     {
       "name": "kanban",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["--dir", "kanban", "dev", "--port", "5173"],
+      "runtimeArgs": [
+        "--dir",
+        "kanban",
+        "dev",
+        "--port",
+        "5173"
+      ],
       "port": 5173
+    },
+    {
+      "name": "kanban-redo",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "--dir",
+        "kanban-redo",
+        "dev",
+        "--port",
+        "5174"
+      ],
+      "port": 5174
     }
   ]
 }
